@@ -1,0 +1,46 @@
+pipeline{
+    agent any
+        parameters {
+      choice choices: ['master', 'dev', 'uat'], description: 'choose the branch to be build', name: 'BranchName'
+      booleanParam defaultValue: false , description: 'would you like to skip the test?', name: 'SkipTests'
+    }
+    options {
+  buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '3')
+}
+
+
+    stages{
+        stage("Git checkout"){
+            steps{
+                git credentialsId: 'HarishYadav-Giga', url: 'https://github.com/HarishYadav-Giga/javahome-myapp', branch: params.BranchName
+            }
+            
+        }
+        stage("maven build"){
+            when {
+                expression{
+                    params.BranchName =="dev"
+            }
+                }
+            steps{
+                script
+                {
+                    if (isUnix()){
+                      sh "mvn clean package -DskipTests=${params.SkipTests}"
+                    }
+                }
+            }
+    }
+}
+post {
+  always {
+    // One or more steps need to be included within each condition's block.
+    echo "clean workspace"
+    cleanWs()
+  }
+  failure {
+    // One or more steps need to be included within each condition's block.
+    echo "send notification"
+  }
+}
+}
