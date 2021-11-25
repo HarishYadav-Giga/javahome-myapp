@@ -31,7 +31,17 @@ pipeline{
                 }
             }
     }
-}
+        stage("Tomcat Deployment --Dev"){
+            steps{
+               sshagent(['tomcat-dev']) {
+                // some block
+                sh "scp -o StrictHostKeyChecking=no target/calculator.war ec2-user@172.31.8.242:/opt/tomcat8/webapps/"
+                sh "ssh ec2-user@172.31.8.242 /opt/tomcat8/bin/startup.sh "
+              } 
+            }
+            
+        }
+        }
 post {
   always {
     // One or more steps need to be included within each condition's block.
