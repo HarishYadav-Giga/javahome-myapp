@@ -10,12 +10,6 @@ pipeline{
 
 
     stages{
-        stage("Git checkout"){
-            steps{
-                git credentialsId: 'HarishYadav-Giga', url: 'https://github.com/HarishYadav-Giga/javahome-myapp', branch: params.BranchName
-            }
-            
-        }
         stage("maven build"){
             when {
                 expression{
