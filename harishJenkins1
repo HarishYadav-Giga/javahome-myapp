@@ -29,6 +29,7 @@ pipeline{
         stage("Tomcat Deployment --Dev"){
           steps{
             tomcatdeploy("172.31.8.242","tomcat-dev","calculator")
+            //def call(ip,credID,warFileName)
             }
             
         }
